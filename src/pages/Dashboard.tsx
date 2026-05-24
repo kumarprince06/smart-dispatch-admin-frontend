@@ -1,0 +1,141 @@
+import React from 'react';
+import { 
+  TrendingUp, 
+  Users, 
+  Package, 
+  Clock, 
+  AlertCircle
+} from 'lucide-react';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
+
+const data = [
+  { name: 'Mon', orders: 4000, revenue: 2400 },
+  { name: 'Tue', orders: 3000, revenue: 1398 },
+  { name: 'Wed', orders: 2000, revenue: 9800 },
+  { name: 'Thu', orders: 2780, revenue: 3908 },
+  { name: 'Fri', orders: 1890, revenue: 4800 },
+  { name: 'Sat', orders: 2390, revenue: 3800 },
+  { name: 'Sun', orders: 3490, revenue: 4300 },
+];
+
+export const Dashboard: React.FC = () => {
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-2xl font-bold mb-1">Dashboard Overview</h1>
+          <p className="text-sm text-text-muted">Welcome back, here's what's happening today.</p>
+        </div>
+        <div className="flex gap-4">
+          <button className="btn btn-secondary">Download Report</button>
+          <button className="btn btn-primary">Create Order</button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
+          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
+            <span>Total Revenue</span>
+            <div className="p-2 rounded-md bg-accent-light text-accent-primary flex items-center justify-center">
+              <TrendingUp size={20} />
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-text-primary">$24,592.00</div>
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
+            <span>+12.5%</span> <span className="text-text-muted font-normal">from last week</span>
+          </div>
+        </div>
+
+        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
+          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
+            <span>Active Drivers</span>
+            <div className="p-2 rounded-md bg-status-info/15 text-status-info flex items-center justify-center">
+              <Users size={20} />
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-text-primary">142</div>
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
+            <span>+4</span> <span className="text-text-muted font-normal">new today</span>
+          </div>
+        </div>
+
+        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
+          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
+            <span>Orders Today</span>
+            <div className="p-2 rounded-md bg-status-success/15 text-status-success flex items-center justify-center">
+              <Package size={20} />
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-text-primary">1,245</div>
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
+            <span>+18.2%</span> <span className="text-text-muted font-normal">from yesterday</span>
+          </div>
+        </div>
+
+        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
+          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
+            <span>Delayed Orders</span>
+            <div className="p-2 rounded-md bg-status-warning/15 text-status-warning flex items-center justify-center">
+              <Clock size={20} />
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-text-primary">24</div>
+          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-danger">
+            <span>-2.1%</span> <span className="text-text-muted font-normal">from yesterday</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="glass-panel p-6 flex flex-col lg:col-span-2">
+          <h3 className="text-lg font-semibold mb-6 text-text-primary">Revenue & Orders Overview</h3>
+          <div className="flex-1 min-h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366F1" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#6366F1" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color, rgba(255,255,255,0.08))" vertical={false} />
+                <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#131722', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '8px' }}
+                  itemStyle={{ color: '#F3F4F6' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#6366F1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="glass-panel p-6 flex flex-col">
+          <h3 className="text-lg font-semibold mb-6 text-text-primary">Recent Alerts</h3>
+          <div className="flex flex-col gap-5">
+            {[1, 2, 3, 4, 5].map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-status-warning/15 text-status-warning flex items-center justify-center flex-shrink-0">
+                  <AlertCircle size={16} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm text-text-secondary">Driver <strong className="text-text-primary">John Doe</strong> reported a vehicle issue.</p>
+                  <span className="text-xs text-text-muted">{i * 12} mins ago</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,5 +1,5 @@
 export type DriverStatus = 'ONLINE' | 'OFFLINE' | 'ON_DELIVERY' | 'BUSY' | 'ON_BREAK' | 'SUSPENDED';
-export type VehicleType = 'BICYCLE' | 'SCOOTER' | 'MOTORCYCLE' | 'CAR' | 'VAN' | 'TRUCK';
+export type VehicleType = 'BIKE' | 'VAN' | 'CAR' | 'AUTO_RICKSHAW' | 'TEMPO' | 'TRUCK';
 export type VerificationStatus = 'PENDING' | 'VERIFIED' | 'REJECTED';
 export type DriverTier = 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
 export type DriverSkillTag = 'FRAGILE' | 'COLD_CHAIN' | 'HEAVY' | 'MEDICAL' | 'EXPRESS';

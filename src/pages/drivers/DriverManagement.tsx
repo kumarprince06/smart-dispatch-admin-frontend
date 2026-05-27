@@ -8,6 +8,7 @@ import { OnboardDriverModal } from '../../components/drivers/OnboardDriverModal'
 export const DriverManagement: React.FC = () => {
   const { get, data: stats, isLoading } = useApi<DriverStatsResponse>();
   const [showOnboardModal, setShowOnboardModal] = React.useState(false);
+  const [refreshKey, setRefreshKey] = React.useState(0);
 
   useEffect(() => {
     get('/drivers/stats');
@@ -93,7 +94,7 @@ export const DriverManagement: React.FC = () => {
         </div>
       )}
 
-      <DriverTable />
+      <DriverTable refreshTrigger={refreshKey} />
 
       {showOnboardModal && (
         <OnboardDriverModal 
@@ -101,9 +102,7 @@ export const DriverManagement: React.FC = () => {
           onSuccess={() => {
             setShowOnboardModal(false);
             get('/drivers/stats');
-            // We should ideally reload the table too.
-            // In a real app we might use a global store or context to trigger a table refresh.
-            // For now, refreshing the stats is a good indicator of success.
+            setRefreshKey(prev => prev + 1);
           }} 
         />
       )}

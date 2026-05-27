@@ -60,7 +60,7 @@ export const OnboardDriverModal: React.FC<OnboardDriverModalProps> = ({ onClose,
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
       <div className="bg-bg-secondary border border-border-color rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
-        
+
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border-color">
           <div>
@@ -76,18 +76,17 @@ export const OnboardDriverModal: React.FC<OnboardDriverModalProps> = ({ onClose,
         <div className="px-6 py-4 bg-bg-tertiary/30 border-b border-border-color flex justify-between items-center relative">
           <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-0.5 bg-border-color z-0"></div>
           <div className="absolute left-10 right-10 top-1/2 -translate-y-1/2 h-0.5 bg-accent-primary z-0 transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
-          
+
           {[
             { num: 1, icon: User, label: 'Personal' },
             { num: 2, icon: Truck, label: 'Vehicle' },
             { num: 3, icon: MapPin, label: 'Setup' }
           ].map((s) => (
             <div key={s.num} className="relative z-10 flex flex-col items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${
-                step > s.num ? 'bg-accent-primary border-accent-primary text-white' :
-                step === s.num ? 'bg-bg-primary border-accent-primary text-accent-primary' :
-                'bg-bg-primary border-border-color text-text-muted'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors duration-300 ${step > s.num ? 'bg-accent-primary border-accent-primary text-white' :
+                  step === s.num ? 'bg-bg-primary border-accent-primary text-accent-primary' :
+                    'bg-bg-primary border-border-color text-text-muted'
+                }`}>
                 {step > s.num ? <Check size={14} strokeWidth={3} /> : <s.icon size={14} />}
               </div>
               <span className={`text-xs font-medium ${step >= s.num ? 'text-text-primary' : 'text-text-muted'}`}>{s.label}</span>
@@ -97,7 +96,7 @@ export const OnboardDriverModal: React.FC<OnboardDriverModalProps> = ({ onClose,
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6">
-          
+
           {error && (
             <div className="mb-6 p-4 rounded-lg bg-status-danger/10 border border-status-danger/30 flex items-start gap-3">
               <AlertCircle size={18} className="text-status-danger shrink-0 mt-0.5" />
@@ -139,10 +138,11 @@ export const OnboardDriverModal: React.FC<OnboardDriverModalProps> = ({ onClose,
                   <div>
                     <label className="block text-sm font-medium text-text-secondary mb-1">Vehicle Type *</label>
                     <select name="vehicleType" required value={formData.vehicleType} onChange={handleChange} className="w-full bg-bg-primary border border-border-color rounded-lg px-4 py-2 text-text-primary focus:border-accent-primary outline-none transition-colors appearance-none">
-                      <option value="BICYCLE">Bicycle</option>
-                      <option value="BIKE">Motorbike</option>
+                      <option value="BIKE">Two-Wheeler / Bike</option>
+                      <option value="AUTO_RICKSHAW">Auto Rickshaw</option>
                       <option value="CAR">Car</option>
-                      <option value="VAN">Van</option>
+                      <option value="VAN">Van / Minivan</option>
+                      <option value="TEMPO">Tempo</option>
                       <option value="TRUCK">Truck</option>
                     </select>
                   </div>
@@ -208,7 +208,7 @@ export const OnboardDriverModal: React.FC<OnboardDriverModalProps> = ({ onClose,
               <ChevronLeft size={18} />
               Back
             </button>
-            
+
             <button
               type="submit"
               disabled={!isStepValid() || isLoading}

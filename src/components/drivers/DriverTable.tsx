@@ -4,7 +4,11 @@ import type { DriverResponse, PaginatedResponse, DriverStatus, VerificationStatu
 import { Search, Filter, MoreVertical, Eye, ShieldCheck, ShieldAlert, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { DriverDetailsModal } from './DriverDetailsModal';
 
-export const DriverTable: React.FC = () => {
+interface DriverTableProps {
+  refreshTrigger?: number;
+}
+
+export const DriverTable: React.FC<DriverTableProps> = ({ refreshTrigger = 0 }) => {
   const { get, isLoading, data } = useApi<PaginatedResponse<DriverResponse>>();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
@@ -27,7 +31,7 @@ export const DriverTable: React.FC = () => {
       fetchDrivers();
     }, 300);
     return () => clearTimeout(timer);
-  }, [page, search, statusFilter]);
+  }, [page, search, statusFilter, refreshTrigger]);
 
   const handleVerify = async (id: number, status: VerificationStatus, reason?: string) => {
     let url = `/drivers/${id}/verify?status=${status}`;

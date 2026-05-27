@@ -8,6 +8,7 @@ import { OrderManagement } from './pages/orders/OrderManagement';
 import { CustomerManagement } from './pages/customers/CustomerManagement';
 import { PaymentManagement } from './pages/payments/PaymentManagement';
 import { WalletManagement } from './pages/wallets/WalletManagement';
+import { ZoneManagement } from './pages/zones/ZoneManagement';
 import { useAuthStore } from './store/useAuthStore';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -49,7 +50,7 @@ function AppRoutes() {
             <Route path="customers" element={<CustomerManagement />} />
             <Route path="payments" element={<PaymentManagement />} />
             <Route path="wallets" element={<WalletManagement />} />
-            <Route path="zones" element={<Placeholder title="Service Zones" />} />
+            <Route path="zones" element={<ZoneManagement />} />
             <Route path="settings" element={<Placeholder title="Platform Settings" />} />
           </Route>
         </Route>

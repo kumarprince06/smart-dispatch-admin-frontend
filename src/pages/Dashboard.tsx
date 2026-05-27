@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  TrendingUp, 
-  Users, 
-  Package, 
-  Clock, 
-  AlertCircle
-} from 'lucide-react';
+import { TrendingUp, Users, Package, Clock, AlertCircle } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { StatCard } from '../components/common/StatCard';
 import { 
   AreaChart, 
   Area, 
@@ -70,65 +65,41 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
-          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>Total Revenue</span>
-            <div className="p-2 rounded-md bg-accent-light text-accent-primary flex items-center justify-center">
-              <TrendingUp size={20} />
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-text-primary">
-            ₹{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>Lifetime</span> <span className="text-text-muted font-normal">earnings</span>
-          </div>
-        </div>
+        <StatCard
+          title="Total Revenue"
+          value={`₹${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          icon={<TrendingUp size={24} />}
+          bgClass="bg-accent-primary/10"
+          textClass="text-accent-primary"
+          subtitle="Lifetime earnings"
+        />
 
-        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
-          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>Active Drivers</span>
-            <div className="p-2 rounded-md bg-status-info/15 text-status-info flex items-center justify-center">
-              <Users size={20} />
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-text-primary">
-            {driverStats ? (driverStats.onlineDrivers || driverStats.totalDrivers || 0) : '...'}
-          </div>
-          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>{driverStats?.availableDrivers || 0}</span> <span className="text-text-muted font-normal">Available</span>
-          </div>
-        </div>
+        <StatCard
+          title="Active Drivers"
+          value={driverStats ? (driverStats.onlineDrivers || driverStats.totalDrivers || 0) : '...'}
+          icon={<Users size={24} />}
+          bgClass="bg-status-info/10"
+          textClass="text-status-info"
+          subtitle={`${driverStats?.availableDrivers || 0} available`}
+        />
 
-        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
-          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>Total Orders</span>
-            <div className="p-2 rounded-md bg-status-success/15 text-status-success flex items-center justify-center">
-              <Package size={20} />
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-text-primary">
-            {orderStats ? (orderStats.totalOrders || 0) : '...'}
-          </div>
-          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>{orderStats?.deliveredOrders || 0}</span> <span className="text-text-muted font-normal">Delivered</span>
-          </div>
-        </div>
+        <StatCard
+          title="Total Orders"
+          value={orderStats ? (orderStats.totalOrders || 0) : '...'}
+          icon={<Package size={24} />}
+          bgClass="bg-status-success/10"
+          textClass="text-status-success"
+          subtitle={`${orderStats?.deliveredOrders || 0} delivered`}
+        />
 
-        <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
-          <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>In-Transit / Delayed</span>
-            <div className="p-2 rounded-md bg-status-warning/15 text-status-warning flex items-center justify-center">
-              <Clock size={20} />
-            </div>
-          </div>
-          <div className="text-3xl font-bold text-text-primary">
-            {orderStats ? (orderStats.inTransitOrders || 0) : '...'}
-          </div>
-          <div className="inline-flex items-center gap-1 text-sm font-medium text-status-danger">
-            <span>{orderStats?.failedOrders || 0}</span> <span className="text-text-muted font-normal">Failed</span>
-          </div>
-        </div>
+        <StatCard
+          title="In-Transit / Delayed"
+          value={orderStats ? (orderStats.inTransitOrders || 0) : '...'}
+          icon={<Clock size={24} />}
+          bgClass="bg-status-warning/10"
+          textClass="text-status-warning"
+          subtitle={`${orderStats?.failedOrders || 0} failed`}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

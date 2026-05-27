@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { OrderStatsResponse } from '../../types/order';
-import { Package, Truck, CheckCircle, AlertTriangle, ListOrdered, Navigation, Clock } from 'lucide-react';
+import { CheckCircle, AlertTriangle, ListOrdered, Navigation, Clock } from 'lucide-react';
 import { OrderTable } from '../../components/orders/OrderTable';
+import { StatCard } from '../../components/common/StatCard';
 
 export const OrderManagement: React.FC = () => {
   const { get, data: stats, isLoading } = useApi<OrderStatsResponse>();
@@ -11,20 +12,6 @@ export const OrderManagement: React.FC = () => {
     get('/orders/stats');
   }, []);
 
-  const StatCard = ({ title, value, icon, bgClass, textClass, subtitle }: any) => (
-    <div className="bg-bg-secondary p-6 rounded-2xl border border-border-color shadow-sm relative overflow-hidden group hover:border-accent-primary/50 transition-colors">
-      <div className="flex justify-between items-start z-10 relative">
-        <div>
-          <p className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-2">{title}</p>
-          <h3 className="text-3xl font-bold text-text-primary">{value}</h3>
-          {subtitle && <p className="text-xs text-text-muted mt-2">{subtitle}</p>}
-        </div>
-        <div className={`p-3 rounded-xl ${bgClass} ${textClass}`}>
-          {icon}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 animate-fade-in">

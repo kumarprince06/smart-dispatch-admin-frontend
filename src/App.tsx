@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AdminLayout } from './components/layout/AdminLayout';
 import { Dashboard } from './pages/Dashboard';
@@ -21,11 +21,11 @@ const Placeholder = ({ title }: { title: string }) => (
 // Protected Route Wrapper
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuthStore();
-  
+
   if (isLoading) {
     return <div className="h-screen w-full flex items-center justify-center bg-bg-primary text-text-primary">Loading...</div>;
   }
-  
+
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
@@ -36,7 +36,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
+
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />

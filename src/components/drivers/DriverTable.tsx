@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { DriverResponse, PaginatedResponse, DriverStatus, VerificationStatus } from '../../types/driver';
 import { Search, Filter, MoreVertical, Eye, ShieldCheck, ShieldAlert, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { DriverDetailsModal } from './DriverDetailsModal';
 
 export const DriverTable: React.FC = () => {
   const { get, isLoading, data } = useApi<PaginatedResponse<DriverResponse>>();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  
+  const { patch, isLoading: isPatching } = useApi<DriverResponse>();
+  const [selectedDriver, setSelectedDriver] = useState<DriverResponse | null>(null);
   
   const fetchDrivers = () => {
     let url = `/drivers?page=${page}&size=10&sortBy=createdAt&sortDir=desc`;
@@ -24,6 +28,21 @@ export const DriverTable: React.FC = () => {
     }, 300);
     return () => clearTimeout(timer);
   }, [page, search, statusFilter]);
+
+  const handleVerify = async (id: number, status: VerificationStatus, reason?: string) => {
+    let url = `/drivers/${id}/verify?status=${status}`;
+    if (reason) url += `&rejectionReason=${encodeURIComponent(reason)}`;
+    
+    await patch(url);
+    setSelectedDriver(null);
+    fetchDrivers();
+  };
+
+  const handleStatusUpdate = async (id: number, status: DriverStatus) => {
+    await patch(`/drivers/${id}/status`, { status });
+    setSelectedDriver(null);
+    fetchDrivers();
+  };
 
   const getStatusColor = (status: DriverStatus) => {
     switch (status) {
@@ -144,7 +163,10 @@ export const DriverTable: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="p-2 text-text-muted hover:text-accent-primary hover:bg-accent-primary/10 rounded-lg transition-colors inline-flex items-center justify-center">
+                    <button 
+                      onClick={() => setSelectedDriver(driver)}
+                      className="p-2 text-text-muted hover:text-accent-primary hover:bg-accent-primary/10 rounded-lg transition-colors inline-flex items-center justify-center"
+                    >
                       <Eye size={18} />
                     </button>
                     <button className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors inline-flex items-center justify-center ml-1">
@@ -187,6 +209,17 @@ export const DriverTable: React.FC = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Details & Action Modal */}
+      {selectedDriver && (
+        <DriverDetailsModal 
+          driver={selectedDriver} 
+          onClose={() => setSelectedDriver(null)}
+          onVerify={handleVerify}
+          onUpdateStatus={handleStatusUpdate}
+          isSubmitting={isPatching}
+        />
       )}
     </div>
   );

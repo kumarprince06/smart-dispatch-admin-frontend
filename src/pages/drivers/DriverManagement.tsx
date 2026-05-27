@@ -3,9 +3,11 @@ import { useApi } from '../../hooks/useApi';
 import type { DriverStatsResponse } from '../../types/driver';
 import { Users, UserCheck, Clock, AlertTriangle, Activity } from 'lucide-react';
 import { DriverTable } from '../../components/drivers/DriverTable';
+import { OnboardDriverModal } from '../../components/drivers/OnboardDriverModal';
 
 export const DriverManagement: React.FC = () => {
   const { get, data: stats, isLoading } = useApi<DriverStatsResponse>();
+  const [showOnboardModal, setShowOnboardModal] = React.useState(false);
 
   useEffect(() => {
     get('/drivers/stats');
@@ -34,7 +36,10 @@ export const DriverManagement: React.FC = () => {
           <h1 className="text-2xl font-bold text-text-primary">Driver Management</h1>
           <p className="text-text-secondary mt-1">Manage your fleet, approve drivers, and monitor real-time status.</p>
         </div>
-        <button className="px-4 py-2 bg-accent-primary hover:bg-accent-hover text-white rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 flex items-center gap-2">
+        <button 
+          onClick={() => setShowOnboardModal(true)}
+          className="px-4 py-2 bg-accent-primary hover:bg-accent-hover text-white rounded-xl text-sm font-semibold shadow-md transition-all active:scale-95 flex items-center gap-2"
+        >
           <Users size={16} />
           Onboard Driver
         </button>
@@ -89,6 +94,19 @@ export const DriverManagement: React.FC = () => {
       )}
 
       <DriverTable />
+
+      {showOnboardModal && (
+        <OnboardDriverModal 
+          onClose={() => setShowOnboardModal(false)} 
+          onSuccess={() => {
+            setShowOnboardModal(false);
+            get('/drivers/stats');
+            // We should ideally reload the table too.
+            // In a real app we might use a global store or context to trigger a table refresh.
+            // For now, refreshing the stats is a good indicator of success.
+          }} 
+        />
+      )}
     </div>
   );
 };

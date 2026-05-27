@@ -18,6 +18,33 @@ export interface DriverStatsResponse {
   rejectedDrivers: number;
 }
 
+export interface AdminOnboardDriverRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNo: string;
+  profilePictureUrl?: string;
+  dateOfBirth?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  vehicleType: VehicleType;
+  vehicleNumber: string;
+  vehicleModel?: string;
+  vehicleColor?: string;
+  vehicleYear?: number;
+  vehicleCapacityKg?: number;
+  licenseNumber: string;
+  licenseExpiry?: string;
+  preferredZone?: string;
+  serviceRadiusKm?: number;
+  maxConcurrentOrders?: number;
+  skillTags?: DriverSkillTag[];
+}
+
 export interface DriverResponse {
   id: number;
   

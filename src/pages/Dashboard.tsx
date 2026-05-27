@@ -17,26 +17,43 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-const data = [
-  { name: 'Mon', orders: 4000, revenue: 2400 },
-  { name: 'Tue', orders: 3000, revenue: 1398 },
-  { name: 'Wed', orders: 2000, revenue: 9800 },
-  { name: 'Thu', orders: 2780, revenue: 3908 },
-  { name: 'Fri', orders: 1890, revenue: 4800 },
-  { name: 'Sat', orders: 2390, revenue: 3800 },
-  { name: 'Sun', orders: 3490, revenue: 4300 },
+const initialChartData = [
+  { name: 'Mon', orders: 0, revenue: 0 },
+  { name: 'Tue', orders: 0, revenue: 0 },
+  { name: 'Wed', orders: 0, revenue: 0 },
+  { name: 'Thu', orders: 0, revenue: 0 },
+  { name: 'Fri', orders: 0, revenue: 0 },
+  { name: 'Sat', orders: 0, revenue: 0 },
+  { name: 'Sun', orders: 0, revenue: 0 },
 ];
 
 export const Dashboard: React.FC = () => {
   const { get: getOrders } = useApi<any>();
   const { get: getDrivers } = useApi<any>();
+  const { get: getRevenue } = useApi<any>();
+  const { get: getChart } = useApi<any>();
+  const { get: getAlerts } = useApi<any>();
 
   const [orderStats, setOrderStats] = useState<any>(null);
   const [driverStats, setDriverStats] = useState<any>(null);
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  const [chartData, setChartData] = useState<any[]>(initialChartData);
+  const [alerts, setAlerts] = useState<any[]>([]);
 
   useEffect(() => {
     getOrders('/orders/stats').then(res => res && setOrderStats(res.data));
     getDrivers('/drivers/stats').then(res => res && setDriverStats(res.data));
+    getRevenue('/payments/stats/revenue').then(res => res && setTotalRevenue(res.data));
+    getChart('/payments/stats/chart').then(res => {
+      if (res && res.data && res.data.length > 0) {
+        setChartData(res.data);
+      }
+    });
+    getAlerts('/notifications?size=5').then(res => {
+      if (res && res.data) {
+        setAlerts(res.data.content);
+      }
+    });
   }, []);
 
   return (
@@ -60,9 +77,11 @@ export const Dashboard: React.FC = () => {
               <TrendingUp size={20} />
             </div>
           </div>
-          <div className="text-3xl font-bold text-text-primary">$24,592.00</div>
+          <div className="text-3xl font-bold text-text-primary">
+            ₹{totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
           <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>+12.5%</span> <span className="text-text-muted font-normal">from last week</span>
+            <span>Lifetime</span> <span className="text-text-muted font-normal">earnings</span>
           </div>
         </div>
 
@@ -117,7 +136,7 @@ export const Dashboard: React.FC = () => {
           <h3 className="text-lg font-semibold mb-6 text-text-primary">Revenue & Orders Overview</h3>
           <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#6366F1" stopOpacity={0.3}/>
@@ -126,7 +145,7 @@ export const Dashboard: React.FC = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color, rgba(255,255,255,0.08))" vertical={false} />
                 <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                <YAxis stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#131722', borderColor: 'rgba(255,255,255,0.08)', borderRadius: '8px' }}
                   itemStyle={{ color: '#F3F4F6' }}
@@ -140,17 +159,19 @@ export const Dashboard: React.FC = () => {
         <div className="glass-panel p-6 flex flex-col">
           <h3 className="text-lg font-semibold mb-6 text-text-primary">Recent Alerts</h3>
           <div className="flex flex-col gap-5">
-            {[1, 2, 3, 4, 5].map((_, i) => (
-              <div key={i} className="flex gap-4">
+            {alerts.length > 0 ? alerts.map((alert) => (
+              <div key={alert.id} className="flex gap-4">
                 <div className="w-8 h-8 rounded-full bg-status-warning/15 text-status-warning flex items-center justify-center flex-shrink-0">
                   <AlertCircle size={16} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm text-text-secondary">Driver <strong className="text-text-primary">John Doe</strong> reported a vehicle issue.</p>
-                  <span className="text-xs text-text-muted">{i * 12} mins ago</span>
+                  <p className="text-sm text-text-secondary">{alert.message}</p>
+                  <span className="text-xs text-text-muted">{new Date(alert.createdAt).toLocaleString()}</span>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="text-sm text-text-muted">No recent alerts.</div>
+            )}
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { Login } from './pages/Login';
 import { DriverManagement } from './pages/drivers/DriverManagement';
 import { OrderManagement } from './pages/orders/OrderManagement';
 import { CustomerManagement } from './pages/customers/CustomerManagement';
+import { PaymentManagement } from './pages/payments/PaymentManagement';
+import { WalletManagement } from './pages/wallets/WalletManagement';
 import { useAuthStore } from './store/useAuthStore';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -45,8 +47,8 @@ function AppRoutes() {
             <Route path="orders" element={<OrderManagement />} />
             <Route path="drivers" element={<DriverManagement />} />
             <Route path="customers" element={<CustomerManagement />} />
-            <Route path="payments" element={<Placeholder title="Payment Gateway & Metrics" />} />
-            <Route path="wallets" element={<Placeholder title="Wallet Ledger" />} />
+            <Route path="payments" element={<PaymentManagement />} />
+            <Route path="wallets" element={<WalletManagement />} />
             <Route path="zones" element={<Placeholder title="Service Zones" />} />
             <Route path="settings" element={<Placeholder title="Platform Settings" />} />
           </Route>

@@ -53,27 +53,49 @@ export function useApi<T>() {
         return null;
       }
     },
-    []
+    [] // stable reference — never changes
+  );
+
+  // Each convenience method is individually memoized so it has a stable
+  // identity across renders. Components that list these in useEffect deps
+  // will NOT re-run the effect unless the hook itself is re-instantiated.
+  const get = useCallback(
+    <R = T>(url: string, config?: AxiosRequestConfig) =>
+      request<R>({ ...config, method: 'GET', url }),
+    [request]
+  );
+
+  const post = useCallback(
+    <R = T>(url: string, data?: any, config?: AxiosRequestConfig) =>
+      request<R>({ ...config, method: 'POST', url, data }),
+    [request]
+  );
+
+  const put = useCallback(
+    <R = T>(url: string, data?: any, config?: AxiosRequestConfig) =>
+      request<R>({ ...config, method: 'PUT', url, data }),
+    [request]
+  );
+
+  const patch = useCallback(
+    <R = T>(url: string, data?: any, config?: AxiosRequestConfig) =>
+      request<R>({ ...config, method: 'PATCH', url, data }),
+    [request]
+  );
+
+  const del = useCallback(
+    <R = T>(url: string, config?: AxiosRequestConfig) =>
+      request<R>({ ...config, method: 'DELETE', url }),
+    [request]
   );
 
   return {
     ...state,
     request,
-    
-    // Convenience methods
-    get: <R = T>(url: string, config?: AxiosRequestConfig) => 
-      request<R>({ ...config, method: 'GET', url }),
-      
-    post: <R = T>(url: string, data?: any, config?: AxiosRequestConfig) => 
-      request<R>({ ...config, method: 'POST', url, data }),
-      
-    put: <R = T>(url: string, data?: any, config?: AxiosRequestConfig) => 
-      request<R>({ ...config, method: 'PUT', url, data }),
-      
-    patch: <R = T>(url: string, data?: any, config?: AxiosRequestConfig) => 
-      request<R>({ ...config, method: 'PATCH', url, data }),
-      
-    delete: <R = T>(url: string, config?: AxiosRequestConfig) => 
-      request<R>({ ...config, method: 'DELETE', url }),
+    get,
+    post,
+    put,
+    patch,
+    delete: del,
   };
 }

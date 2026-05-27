@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { CustomerResponse, PaginatedCustomerResponse } from '../../types/customer';
-import { Search, Filter, MoreVertical, Eye, MapPin, User, Activity, AlertCircle, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { Search, Filter, Eye, MapPin, User, Activity, AlertCircle, ShoppingBag, ShieldCheck, BanIcon } from 'lucide-react';
 import { CustomerDetailsModal } from './CustomerDetailsModal';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 interface CustomerTableProps {
   refreshTrigger?: number;
@@ -16,6 +17,7 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({ refreshTrigger = 0
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerResponse | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<{ customer: CustomerResponse } | null>(null);
 
   const fetchCustomers = () => {
     let url = `/admin/customers?page=${page}&size=10&sortBy=createdAt&sortDir=desc`;
@@ -33,10 +35,9 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({ refreshTrigger = 0
   }, [page, search, statusFilter, refreshTrigger]);
 
   const toggleCustomerStatus = async (customerId: number, currentStatus: boolean) => {
-    if (window.confirm(`Are you sure you want to ${currentStatus ? 'suspend' : 'activate'} this customer?`)) {
-      await patch(`/admin/customers/${customerId}/status?active=${!currentStatus}`);
-      fetchCustomers();
-    }
+    await patch(`/admin/customers/${customerId}/status?active=${!currentStatus}`);
+    fetchCustomers();
+    setConfirmTarget(null);
   };
 
   return (
@@ -150,11 +151,11 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({ refreshTrigger = 0
                       <Eye size={18} />
                     </button>
                     <button 
-                      onClick={() => toggleCustomerStatus(customer.id, customer.active)}
+                      onClick={() => setConfirmTarget({ customer })}
                       className="p-2 text-text-muted hover:text-status-danger hover:bg-status-danger/10 rounded-lg transition-colors inline-flex items-center justify-center ml-1"
                       title={customer.active ? "Suspend Customer" : "Activate Customer"}
                     >
-                      <MoreVertical size={18} />
+                      <BanIcon size={18} />
                     </button>
                   </td>
                 </tr>
@@ -211,6 +212,17 @@ export const CustomerTable: React.FC<CustomerTableProps> = ({ refreshTrigger = 0
           customer={selectedCustomer} 
           onClose={() => setSelectedCustomer(null)}
           onUpdate={fetchCustomers}
+        />
+      )}
+
+      {confirmTarget && (
+        <ConfirmModal
+          title={confirmTarget.customer.active ? 'Suspend Customer' : 'Activate Customer'}
+          message={`Are you sure you want to ${confirmTarget.customer.active ? 'suspend' : 'activate'} ${confirmTarget.customer.firstName} ${confirmTarget.customer.lastName}? ${confirmTarget.customer.active ? 'They will lose access to the platform.' : 'They will regain full access.'}`}
+          confirmLabel={confirmTarget.customer.active ? 'Suspend' : 'Activate'}
+          variant={confirmTarget.customer.active ? 'danger' : 'warning'}
+          onConfirm={() => toggleCustomerStatus(confirmTarget.customer.id, confirmTarget.customer.active)}
+          onCancel={() => setConfirmTarget(null)}
         />
       )}
     </div>

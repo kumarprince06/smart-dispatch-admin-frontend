@@ -1,7 +1,8 @@
-import React from 'react';
-import { Trash2, Activity, Map, Zap, CircleDashed } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trash2, Activity, Map, Zap, CircleDashed, ToggleLeft, ToggleRight } from 'lucide-react';
 import type { ServiceZone } from '../../types/zone';
 import { useApi } from '../../hooks/useApi';
+import { ConfirmModal } from '../common/ConfirmModal';
 
 interface ZoneTableProps {
   zones: ServiceZone[];
@@ -10,13 +11,19 @@ interface ZoneTableProps {
 }
 
 export const ZoneTable: React.FC<ZoneTableProps> = ({ zones, isLoading, onUpdate }) => {
-  const { delete: deleteZone } = useApi();
+  const { delete: deleteZone, patch } = useApi();
+  const [confirmDelete, setConfirmDelete] = useState<ServiceZone | null>(null);
 
-  const handleDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this zone? This might affect ongoing orders in this area.')) {
-      await deleteZone(`/zones/${id}`);
-      onUpdate();
-    }
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+    await deleteZone(`/zones/${confirmDelete.id}`);
+    setConfirmDelete(null);
+    onUpdate();
+  };
+
+  const toggleActive = async (zone: ServiceZone) => {
+    await patch(`/zones/${zone.id}`, { ...zone, active: !zone.active });
+    onUpdate();
   };
 
   return (
@@ -84,7 +91,18 @@ export const ZoneTable: React.FC<ZoneTableProps> = ({ zones, isLoading, onUpdate
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button 
-                      onClick={() => handleDelete(zone.id)}
+                      onClick={() => toggleActive(zone)}
+                      className={`p-2 rounded-lg transition-colors inline-flex items-center justify-center mr-1 ${
+                        zone.active 
+                          ? 'text-status-success hover:bg-status-success/10' 
+                          : 'text-text-muted hover:text-status-success hover:bg-status-success/10'
+                      }`}
+                      title={zone.active ? 'Deactivate Zone' : 'Activate Zone'}
+                    >
+                      {zone.active ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
+                    </button>
+                    <button 
+                      onClick={() => setConfirmDelete(zone)}
                       className="p-2 text-text-muted hover:text-status-danger hover:bg-status-danger/10 rounded-lg transition-colors inline-flex items-center justify-center"
                       title="Delete Zone"
                     >
@@ -109,6 +127,17 @@ export const ZoneTable: React.FC<ZoneTableProps> = ({ zones, isLoading, onUpdate
           </tbody>
         </table>
       </div>
+
+      {confirmDelete && (
+        <ConfirmModal
+          title="Delete Service Zone"
+          message={`Are you sure you want to delete "${confirmDelete.name}"? This may affect active orders in this area and cannot be undone.`}
+          confirmLabel="Delete Zone"
+          variant="danger"
+          onConfirm={handleDelete}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
     </div>
   );
 };

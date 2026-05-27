@@ -4,6 +4,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../../hooks/useApi';
+import { useClickOutside } from '../../hooks/useClickOutside';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -21,6 +22,12 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [notifications, setNotifications] = React.useState<any[]>([]);
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
+
+  const notifRef = React.useRef<HTMLDivElement>(null);
+  const profileRef = React.useRef<HTMLDivElement>(null);
+
+  useClickOutside(notifRef, () => setShowNotifications(false));
+  useClickOutside(profileRef, () => setShowProfileMenu(false));
 
   React.useEffect(() => {
     if (user) {
@@ -84,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
-        <div className="relative">
+        <div className="relative" ref={notifRef}>
           <button 
             onClick={openNotifications}
             className="relative w-10 h-10 rounded-full flex items-center justify-center text-text-secondary transition-all duration-200 hover:bg-bg-tertiary hover:text-text-primary"
@@ -117,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           )}
         </div>
         
-        <div className="relative">
+        <div className="relative" ref={profileRef}>
           <div 
             onClick={() => {setShowProfileMenu(!showProfileMenu); setShowNotifications(false);}}
             className="flex items-center gap-3 cursor-pointer p-1 pl-2 rounded-md transition-colors duration-200 hover:bg-bg-tertiary border border-transparent hover:border-border-color"

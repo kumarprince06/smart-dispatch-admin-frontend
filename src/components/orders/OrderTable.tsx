@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { OrderResponse, PaginatedOrderResponse, OrderStatus } from '../../types/order';
-import { Search, Filter, MoreVertical, Eye, MapPin, Navigation, Clock, CheckCircle, Package } from 'lucide-react';
+import { Search, Filter, Eye, MapPin, Navigation, Clock, CheckCircle, Package } from 'lucide-react';
 import { OrderDetailsModal } from './OrderDetailsModal';
+import { useSearchParams } from 'react-router-dom';
 
 interface OrderTableProps {
   refreshTrigger?: number;
@@ -10,10 +11,20 @@ interface OrderTableProps {
 
 export const OrderTable: React.FC<OrderTableProps> = ({ refreshTrigger = 0 }) => {
   const { get, isLoading, data } = useApi<PaginatedOrderResponse>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(0);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(() => searchParams.get('search') || '');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
+
+  // Sync search state to URL param on change
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(0);
+    const params: Record<string, string> = {};
+    if (value) params['search'] = value;
+    setSearchParams(params, { replace: true });
+  };
 
   const fetchOrders = () => {
     let url = `/orders?page=${page}&size=10&sortBy=createdAt&sortDir=desc`;
@@ -56,7 +67,7 @@ export const OrderTable: React.FC<OrderTableProps> = ({ refreshTrigger = 0 }) =>
             type="text" 
             placeholder="Search by Tracking ID, Customer..." 
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full bg-bg-primary border border-border-color rounded-xl pl-10 pr-4 py-2 text-sm text-text-primary focus:border-accent-primary outline-none transition-colors"
           />
         </div>

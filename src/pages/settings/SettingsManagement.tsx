@@ -87,7 +87,7 @@ export const SettingsManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-6xl mx-auto">
+    <div className="p-6 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
       <div>
         <h1 className="text-2xl font-bold text-text-primary flex items-center gap-2">
           <Settings className="text-accent-primary" /> Platform Settings

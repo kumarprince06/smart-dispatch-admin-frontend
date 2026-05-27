@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { DriverStatsResponse } from '../../types/driver';
 import { Users, UserCheck, Clock, AlertTriangle, Activity } from 'lucide-react';
+import { DriverTable } from '../../components/drivers/DriverTable';
 
 export const DriverManagement: React.FC = () => {
   const { get, data: stats, isLoading } = useApi<DriverStatsResponse>();
@@ -87,12 +88,7 @@ export const DriverManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Placeholder for the table which we will build in the next step */}
-      <div className="bg-bg-secondary border border-border-color rounded-2xl p-8 text-center flex flex-col items-center justify-center min-h-[400px]">
-        <Users size={48} className="text-text-muted mb-4 opacity-50" />
-        <h3 className="text-lg font-medium text-text-primary mb-2">Driver Roster Loading...</h3>
-        <p className="text-text-secondary max-w-md">The comprehensive driver table with filtering and pagination will be implemented in the next iteration.</p>
-      </div>
+      <DriverTable />
     </div>
   );
 };

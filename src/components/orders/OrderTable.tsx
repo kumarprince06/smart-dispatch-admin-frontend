@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { OrderResponse, PaginatedOrderResponse, OrderStatus } from '../../types/order';
 import { Search, Filter, MoreVertical, Eye, MapPin, Navigation, Clock, CheckCircle, Package } from 'lucide-react';
+import { OrderDetailsModal } from './OrderDetailsModal';
 
 interface OrderTableProps {
   refreshTrigger?: number;
@@ -12,6 +13,7 @@ export const OrderTable: React.FC<OrderTableProps> = ({ refreshTrigger = 0 }) =>
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [selectedOrder, setSelectedOrder] = useState<OrderResponse | null>(null);
 
   const fetchOrders = () => {
     let url = `/orders?page=${page}&size=10&sortBy=createdAt&sortDir=desc`;
@@ -153,7 +155,10 @@ export const OrderTable: React.FC<OrderTableProps> = ({ refreshTrigger = 0 }) =>
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="p-2 text-text-muted hover:text-accent-primary hover:bg-accent-primary/10 rounded-lg transition-colors inline-flex items-center justify-center">
+                    <button 
+                      onClick={() => setSelectedOrder(order)}
+                      className="p-2 text-text-muted hover:text-accent-primary hover:bg-accent-primary/10 rounded-lg transition-colors inline-flex items-center justify-center"
+                    >
                       <Eye size={18} />
                     </button>
                     <button className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-tertiary rounded-lg transition-colors inline-flex items-center justify-center ml-1">
@@ -190,6 +195,14 @@ export const OrderTable: React.FC<OrderTableProps> = ({ refreshTrigger = 0 }) =>
             </button>
           </div>
         </div>
+      )}
+
+      {/* Details Modal */}
+      {selectedOrder && (
+        <OrderDetailsModal 
+          order={selectedOrder} 
+          onClose={() => setSelectedOrder(null)} 
+        />
       )}
     </div>
   );

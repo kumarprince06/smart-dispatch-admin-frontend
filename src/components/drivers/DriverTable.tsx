@@ -70,28 +70,26 @@ export const DriverTable: React.FC<DriverTableProps> = ({ refreshTrigger = 0 }) 
 
   return (
     <div className="bg-bg-secondary border border-border-color rounded-2xl overflow-hidden shadow-sm flex flex-col">
-      {/* Table Header & Filters */}
-      <div className="p-6 border-b border-border-color flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-lg font-semibold text-text-primary">Driver Roster</h2>
+      {/* Table Toolbar */}
+      <div className="p-4 border-b border-border-color flex flex-col sm:flex-row gap-4 justify-between items-center bg-bg-tertiary/30">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+          <input 
+            type="text" 
+            placeholder="Search by name, email, or vehicle..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+            className="w-full bg-bg-primary border border-border-color rounded-xl pl-10 pr-4 py-2 text-sm text-text-primary focus:border-accent-primary outline-none transition-colors"
+          />
+        </div>
         
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <div className="relative w-full sm:w-64">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-            <input 
-              type="text" 
-              placeholder="Search by name, email, or vehicle..."
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-              className="w-full bg-bg-primary border border-border-color rounded-lg py-2 pl-9 pr-4 text-sm text-text-primary outline-none focus:border-accent-primary transition-colors placeholder:text-text-muted"
-            />
-          </div>
-          
-          <div className="relative w-full sm:w-auto">
-            <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" />
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto min-w-[160px]">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
             <select 
               value={statusFilter}
               onChange={(e) => { setStatusFilter(e.target.value); setPage(0); }}
-              className="w-full sm:w-auto appearance-none bg-bg-primary border border-border-color rounded-lg py-2 pl-9 pr-8 text-sm text-text-primary outline-none focus:border-accent-primary transition-colors cursor-pointer"
+              className="w-full bg-bg-primary border border-border-color rounded-xl pl-9 pr-4 py-2 text-sm text-text-primary focus:border-accent-primary outline-none transition-colors appearance-none cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="ONLINE">Online</option>

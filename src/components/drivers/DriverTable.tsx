@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { DriverResponse, PaginatedResponse, DriverStatus, VerificationStatus } from '../../types/driver';
+import type { DriverResponse, PaginatedResponse, DriverStatus, VerificationStatus } from '../../types/driver';
 import { Search, Filter, MoreVertical, Eye, ShieldCheck, ShieldAlert, ChevronLeft, ChevronRight, User } from 'lucide-react';
 
 export const DriverTable: React.FC = () => {

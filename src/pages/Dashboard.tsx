@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   TrendingUp, 
   Users, 
@@ -6,6 +6,7 @@ import {
   Clock, 
   AlertCircle
 } from 'lucide-react';
+import { useApi } from '../hooks/useApi';
 import { 
   AreaChart, 
   Area, 
@@ -27,6 +28,17 @@ const data = [
 ];
 
 export const Dashboard: React.FC = () => {
+  const { get: getOrders } = useApi<any>();
+  const { get: getDrivers } = useApi<any>();
+
+  const [orderStats, setOrderStats] = useState<any>(null);
+  const [driverStats, setDriverStats] = useState<any>(null);
+
+  useEffect(() => {
+    getOrders('/orders/stats').then(res => res && setOrderStats(res.data));
+    getDrivers('/drivers/stats').then(res => res && setDriverStats(res.data));
+  }, []);
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex justify-between items-end">
@@ -61,35 +73,41 @@ export const Dashboard: React.FC = () => {
               <Users size={20} />
             </div>
           </div>
-          <div className="text-3xl font-bold text-text-primary">142</div>
+          <div className="text-3xl font-bold text-text-primary">
+            {driverStats ? (driverStats.onlineDrivers || driverStats.totalDrivers || 0) : '...'}
+          </div>
           <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>+4</span> <span className="text-text-muted font-normal">new today</span>
+            <span>{driverStats?.availableDrivers || 0}</span> <span className="text-text-muted font-normal">Available</span>
           </div>
         </div>
 
         <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
           <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>Orders Today</span>
+            <span>Total Orders</span>
             <div className="p-2 rounded-md bg-status-success/15 text-status-success flex items-center justify-center">
               <Package size={20} />
             </div>
           </div>
-          <div className="text-3xl font-bold text-text-primary">1,245</div>
+          <div className="text-3xl font-bold text-text-primary">
+            {orderStats ? (orderStats.totalOrders || 0) : '...'}
+          </div>
           <div className="inline-flex items-center gap-1 text-sm font-medium text-status-success">
-            <span>+18.2%</span> <span className="text-text-muted font-normal">from yesterday</span>
+            <span>{orderStats?.deliveredOrders || 0}</span> <span className="text-text-muted font-normal">Delivered</span>
           </div>
         </div>
 
         <div className="glass-panel p-6 flex flex-col gap-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-primary/30">
           <div className="flex justify-between items-center text-sm font-medium text-text-secondary">
-            <span>Delayed Orders</span>
+            <span>In-Transit / Delayed</span>
             <div className="p-2 rounded-md bg-status-warning/15 text-status-warning flex items-center justify-center">
               <Clock size={20} />
             </div>
           </div>
-          <div className="text-3xl font-bold text-text-primary">24</div>
+          <div className="text-3xl font-bold text-text-primary">
+            {orderStats ? (orderStats.inTransitOrders || 0) : '...'}
+          </div>
           <div className="inline-flex items-center gap-1 text-sm font-medium text-status-danger">
-            <span>-2.1%</span> <span className="text-text-muted font-normal">from yesterday</span>
+            <span>{orderStats?.failedOrders || 0}</span> <span className="text-text-muted font-normal">Failed</span>
           </div>
         </div>
       </div>

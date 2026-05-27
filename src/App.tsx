@@ -4,6 +4,7 @@ import { AdminLayout } from './components/layout/AdminLayout';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { DriverManagement } from './pages/drivers/DriverManagement';
+import { OrderManagement } from './pages/orders/OrderManagement';
 import { useAuthStore } from './store/useAuthStore';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -40,7 +41,7 @@ function AppRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
-            <Route path="orders" element={<Placeholder title="Orders Management" />} />
+            <Route path="orders" element={<OrderManagement />} />
             <Route path="drivers" element={<DriverManagement />} />
             <Route path="customers" element={<Placeholder title="Customer Management" />} />
             <Route path="payments" element={<Placeholder title="Payment Gateway & Metrics" />} />

@@ -5,6 +5,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { DriverManagement } from './pages/drivers/DriverManagement';
 import { OrderManagement } from './pages/orders/OrderManagement';
+import { CustomerManagement } from './pages/customers/CustomerManagement';
 import { useAuthStore } from './store/useAuthStore';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -43,7 +44,7 @@ function AppRoutes() {
             <Route index element={<Dashboard />} />
             <Route path="orders" element={<OrderManagement />} />
             <Route path="drivers" element={<DriverManagement />} />
-            <Route path="customers" element={<Placeholder title="Customer Management" />} />
+            <Route path="customers" element={<CustomerManagement />} />
             <Route path="payments" element={<Placeholder title="Payment Gateway & Metrics" />} />
             <Route path="wallets" element={<Placeholder title="Wallet Ledger" />} />
             <Route path="zones" element={<Placeholder title="Service Zones" />} />

@@ -4,6 +4,8 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import type { OrderResponse, OrderStatus } from '../../types/order';
+import type { DriverResponse, PaginatedResponse } from '../../types/driver';
+import { useApi } from '../../hooks/useApi';
 
 // Fix for default Leaflet marker icons in React
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -38,8 +40,15 @@ interface OrderDetailsModalProps {
   onStatusChange?: (id: number, newStatus: OrderStatus) => void;
 }
 
-export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, onStatusChange }) => {
+export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order: initialOrder, onClose, onStatusChange }) => {
+  const [order, setOrder] = useState<OrderResponse>(initialOrder);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [availableDrivers, setAvailableDrivers] = useState<DriverResponse[]>([]);
+  
+  const { get: getDrivers, isLoading: isLoadingDrivers } = useApi<PaginatedResponse<DriverResponse>>();
+  const { post: assignDriver, isLoading: isAssigningDriver } = useApi<OrderResponse>();
+
   const ORS_API_KEY = '5b3ce3597851110001cf62482d8a30b2452a445883bb9fe53d4220f4'; // OpenRouteService Key (extracted from base64)
 
   useEffect(() => {
@@ -83,6 +92,25 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onC
     (order.pickupLatitude + order.dropLatitude) / 2,
     (order.pickupLongitude + order.dropLongitude) / 2
   ];
+
+  const handleStartAssign = async () => {
+    setIsAssigning(true);
+    const response = await getDrivers('/drivers?status=ONLINE&size=50');
+    if (response?.data?.content) {
+      setAvailableDrivers(response.data.content);
+    }
+  };
+
+  const handleAssignDriver = async (driverId: number) => {
+    const response = await assignDriver(`/orders/${order.orderId}/assign`, { driverId });
+    if (response?.data) {
+      setOrder(response.data);
+      setIsAssigning(false);
+      if (onStatusChange) {
+        onStatusChange(response.data.orderId, response.data.status);
+      }
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
@@ -199,14 +227,54 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onC
                   <Truck size={16} />
                   <span className="text-xs font-semibold uppercase tracking-wider">Driver Assignment</span>
                 </div>
-                {order.status === 'CREATED' && (
-                  <button className="text-xs font-medium bg-accent-primary text-white px-3 py-1.5 rounded-lg hover:bg-accent-primary/90 transition-colors">
+                {order.status === 'CREATED' && !isAssigning && (
+                  <button 
+                    onClick={handleStartAssign}
+                    className="text-xs font-medium bg-accent-primary text-white px-3 py-1.5 rounded-lg hover:bg-accent-primary/90 transition-colors"
+                  >
                     Assign Manually
+                  </button>
+                )}
+                {isAssigning && (
+                  <button 
+                    onClick={() => setIsAssigning(false)}
+                    className="text-xs font-medium bg-bg-tertiary text-text-primary px-3 py-1.5 rounded-lg hover:bg-border-color transition-colors"
+                  >
+                    Cancel
                   </button>
                 )}
               </div>
               
-              {order.driverId ? (
+              {isAssigning ? (
+                <div className="space-y-3 mt-4 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                  {isLoadingDrivers ? (
+                    <div className="text-center py-4 text-text-muted text-sm animate-pulse">Searching for online drivers...</div>
+                  ) : availableDrivers.length > 0 ? (
+                    availableDrivers.map(driver => (
+                      <div key={driver.id} className="flex items-center justify-between p-3 bg-bg-secondary rounded-lg border border-border-color hover:border-accent-primary transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-bg-tertiary rounded-full flex items-center justify-center text-text-muted">
+                            <User size={18} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-text-primary">{driver.firstName} {driver.lastName}</p>
+                            <p className="text-xs text-text-secondary">{driver.vehicleNumber} • {driver.vehicleType}</p>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => handleAssignDriver(driver.id)}
+                          disabled={isAssigningDriver}
+                          className="text-xs font-medium bg-accent-primary/10 text-accent-primary px-3 py-1.5 rounded-lg hover:bg-accent-primary/20 transition-colors disabled:opacity-50"
+                        >
+                          Assign
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-4 text-text-muted text-sm">No online drivers available in the area.</div>
+                  )}
+                </div>
+              ) : order.driverId ? (
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-bg-tertiary rounded-full flex items-center justify-center text-text-muted">
                     <User size={24} />

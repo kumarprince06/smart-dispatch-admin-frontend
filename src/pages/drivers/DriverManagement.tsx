@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useApi } from '../../hooks/useApi';
-import { DriverStatsResponse } from '../../types/driver';
+import type { DriverStatsResponse } from '../../types/driver';
 import { Users, UserCheck, Clock, AlertTriangle, Activity } from 'lucide-react';
 
 export const DriverManagement: React.FC = () => {
@@ -10,16 +10,16 @@ export const DriverManagement: React.FC = () => {
     get('/drivers/stats');
   }, []);
 
-  const StatCard = ({ title, value, icon, colorClass, subtitle }: { title: string, value: number | string, icon: React.ReactNode, colorClass: string, subtitle?: string }) => (
+  const StatCard = ({ title, value, icon, bgClass, textClass, subtitle }: { title: string, value: number | string, icon: React.ReactNode, bgClass: string, textClass: string, subtitle?: string }) => (
     <div className="bg-bg-secondary border border-border-color rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-      <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-10 group-hover:scale-150 transition-transform duration-500 ease-out ${colorClass}`}></div>
+      <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-5 group-hover:scale-150 transition-transform duration-500 ease-out ${bgClass.split('/')[0]}`}></div>
       <div className="flex justify-between items-start mb-4 relative z-10">
         <div>
           <p className="text-text-secondary text-sm font-medium mb-1">{title}</p>
           <h3 className="text-3xl font-bold text-text-primary">{value}</h3>
           {subtitle && <p className="text-xs text-text-muted mt-2">{subtitle}</p>}
         </div>
-        <div className={`p-3 rounded-xl ${colorClass} bg-opacity-10 text-current`}>
+        <div className={`p-3 rounded-xl ${bgClass} ${textClass}`}>
           {icon}
         </div>
       </div>
@@ -50,29 +50,33 @@ export const DriverManagement: React.FC = () => {
           <StatCard 
             title="Total Drivers" 
             value={stats.totalDrivers || 0} 
-            icon={<Users className="text-accent-primary" size={24} />} 
-            colorClass="bg-accent-primary"
-            subtitle={`${stats.activeDrivers || stats.totalDrivers} active on platform`}
+            icon={<Users size={24} />} 
+            bgClass="bg-accent-primary/10"
+            textClass="text-accent-primary"
+            subtitle={`${stats.verifiedDrivers || 0} verified drivers on platform`}
           />
           <StatCard 
             title="Online & Available" 
             value={stats.availableDrivers || 0} 
-            icon={<Activity className="text-status-success" size={24} />} 
-            colorClass="bg-status-success"
+            icon={<Activity size={24} />} 
+            bgClass="bg-status-success/10"
+            textClass="text-status-success"
             subtitle={`${stats.onlineDrivers || 0} total online`}
           />
           <StatCard 
             title="On Delivery / Busy" 
             value={(stats.onDeliveryDrivers || 0) + (stats.busyDrivers || 0)} 
-            icon={<Clock className="text-status-warning" size={24} />} 
-            colorClass="bg-status-warning"
+            icon={<Clock size={24} />} 
+            bgClass="bg-status-warning/10"
+            textClass="text-status-warning"
             subtitle="Currently handling orders"
           />
           <StatCard 
             title="Pending Verification" 
             value={stats.pendingVerification || 0} 
-            icon={<UserCheck className="text-status-info" size={24} />} 
-            colorClass="bg-status-info"
+            icon={<UserCheck size={24} />} 
+            bgClass="bg-status-info/10"
+            textClass="text-status-info"
             subtitle="Action required by admin"
           />
         </div>

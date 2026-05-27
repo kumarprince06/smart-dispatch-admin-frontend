@@ -23,11 +23,7 @@ const initialChartData = [
 ];
 
 export const Dashboard: React.FC = () => {
-  const { get: getOrders } = useApi<any>();
-  const { get: getDrivers } = useApi<any>();
-  const { get: getRevenue } = useApi<any>();
-  const { get: getChart } = useApi<any>();
-  const { get: getAlerts } = useApi<any>();
+  const { request } = useApi<any>();
 
   const [orderStats, setOrderStats] = useState<any>(null);
   const [driverStats, setDriverStats] = useState<any>(null);
@@ -36,20 +32,16 @@ export const Dashboard: React.FC = () => {
   const [alerts, setAlerts] = useState<any[]>([]);
 
   useEffect(() => {
-    getOrders('/orders/stats').then(res => res && setOrderStats(res.data));
-    getDrivers('/drivers/stats').then(res => res && setDriverStats(res.data));
-    getRevenue('/payments/stats/revenue').then(res => res && setTotalRevenue(res.data));
-    getChart('/payments/stats/chart').then(res => {
-      if (res && res.data && res.data.length > 0) {
-        setChartData(res.data);
-      }
+    request({ method: 'GET', url: '/orders/stats' }).then(res => res && setOrderStats(res.data));
+    request({ method: 'GET', url: '/drivers/stats' }).then(res => res && setDriverStats(res.data));
+    request({ method: 'GET', url: '/payments/stats/revenue' }).then(res => res && setTotalRevenue(res.data));
+    request({ method: 'GET', url: '/payments/stats/chart' }).then(res => {
+      if (res && res.data && res.data.length > 0) setChartData(res.data);
     });
-    getAlerts('/notifications?size=5').then(res => {
-      if (res && res.data) {
-        setAlerts(res.data.content);
-      }
+    request({ method: 'GET', url: '/notifications?size=5' }).then(res => {
+      if (res && res.data) setAlerts(res.data.content);
     });
-  }, []);
+  }, [request]);
 
   return (
     <div className="flex flex-col gap-8">

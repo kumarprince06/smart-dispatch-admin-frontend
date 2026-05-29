@@ -6,7 +6,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000, // 15 seconds
+  timeout: 60000, // 60 seconds (Render Free Tier cold start safe)
 });
 
 // Request interceptor to attach JWT token

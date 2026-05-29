@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { OrderResponse, PaginatedOrderResponse, OrderStatus } from '../../types/order';
-import { Search, Filter, Eye, MapPin, Navigation, Clock, CheckCircle, Package } from 'lucide-react';
+import { Search, Filter, Eye, MapPin, Navigation, Package, MoreVertical, ChevronLeft, ChevronRight } from 'lucide-react';
 import { OrderDetailsModal } from './OrderDetailsModal';
 import { useSearchParams } from 'react-router-dom';
 

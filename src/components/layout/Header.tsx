@@ -35,9 +35,9 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
-  const searchRef = React.useRef<HTMLDivElement>(null);
-  const notifRef = React.useRef<HTMLDivElement>(null);
-  const profileRef = React.useRef<HTMLDivElement>(null);
+  const searchRef = React.useRef<HTMLElement>(null);
+  const notifRef = React.useRef<HTMLElement>(null);
+  const profileRef = React.useRef<HTMLElement>(null);
 
   useClickOutside(searchRef, () => { setShowSearchResults(false); });
   useClickOutside(notifRef, () => setShowNotifications(false));

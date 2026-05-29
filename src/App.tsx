@@ -16,13 +16,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 
-// Placeholder components for other routes
-const Placeholder = ({ title }: { title: string }) => (
-  <div className="glass-panel p-8 min-h-[400px]">
-    <h2 className="text-xl font-bold mb-4">{title}</h2>
-    <p className="text-text-secondary">This module is currently under construction. It will interface with the Smart Dispatch backend.</p>
-  </div>
-);
+
 
 // Protected Route Wrapper
 const ProtectedRoute = () => {

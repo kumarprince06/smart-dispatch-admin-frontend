@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, User, Mail, Phone, MapPin, Calendar, CreditCard, ShoppingBag, Award, Activity, AlertTriangle } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, CreditCard, ShoppingBag, Award } from 'lucide-react';
 import type { CustomerResponse } from '../../types/customer';
 
 interface CustomerDetailsModalProps {

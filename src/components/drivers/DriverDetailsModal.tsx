@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { DriverResponse, VerificationStatus, DriverStatus } from '../../types/driver';
-import { X, ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle, Ban, XCircle, Info, MapPin, Truck } from 'lucide-react';
+import { X, ShieldAlert, AlertTriangle, CheckCircle, Ban, XCircle, Info, MapPin, Truck } from 'lucide-react';
 
 interface DriverDetailsModalProps {
   driver: DriverResponse;

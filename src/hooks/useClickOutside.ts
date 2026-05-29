@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 /**
  * Calls handler when a click is detected outside the given ref element.
  */
-export function useClickOutside(
-  ref: React.RefObject<HTMLElement | null>,
+export function useClickOutside<T extends HTMLElement = HTMLElement>(
+  ref: React.RefObject<T | null>,
   handler: () => void
 ) {
   useEffect(() => {

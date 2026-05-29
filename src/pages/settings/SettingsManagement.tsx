@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Lock, Shield, CreditCard, Bell, Save, CheckCircle2 } from 'lucide-react';
+import { Settings, Lock, Shield, CreditCard, Save, CheckCircle2 } from 'lucide-react';
 import { useApi } from '../../hooks/useApi';
 
 interface PlatformConfig {

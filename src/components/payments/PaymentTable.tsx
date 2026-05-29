@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import type { PaymentResponse, PaginatedPaymentResponse } from '../../types/payment';
-import { Search, Filter, CreditCard, RefreshCw, AlertCircle, CheckCircle, Clock, Undo2 } from 'lucide-react';
+import { Filter, CreditCard, AlertCircle, CheckCircle, Clock, Undo2 } from 'lucide-react';
 
 interface PaymentTableProps {
   refreshTrigger?: number;

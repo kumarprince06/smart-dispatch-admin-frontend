@@ -34,8 +34,8 @@ export const ZoneMap: React.FC<ZoneMapProps> = ({ zones }) => {
             center={[zone.centerLatitude, zone.centerLongitude]} 
             radius={zone.radiusKm * 1000} // Leaflet needs meters
             pathOptions={{ 
-              color: zone.active ? '#6366f1' : '#64748b', 
-              fillColor: zone.active ? (zone.zoneMultiplier > 1.0 ? '#ef4444' : '#6366f1') : '#64748b', 
+              color: zone.active ? '#2563eb' : '#64748b', 
+              fillColor: zone.active ? (zone.zoneMultiplier > 1.0 ? '#ef4444' : '#2563eb') : '#64748b', 
               fillOpacity: 0.15, 
               weight: 2 
             }} 

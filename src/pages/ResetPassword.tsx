@@ -63,7 +63,7 @@ export const ResetPassword: React.FC = () => {
 
       <div className="w-full max-w-[420px] relative z-10">
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.png" alt="Smart Dispatch Logo" className="w-16 h-16 rounded-2xl shadow-md border border-border-color mb-4" />
+          <img src="/logo.png" alt="FataFat Logo" className="w-16 h-16 rounded-2xl shadow-md border border-border-color mb-4" />
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Reset Password</h1>
           <p className="text-text-muted text-sm mt-1">Create a new password for your account.</p>
         </div>

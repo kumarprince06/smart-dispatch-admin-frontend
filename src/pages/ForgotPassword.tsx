@@ -32,7 +32,7 @@ export const ForgotPassword: React.FC = () => {
 
       <div className="w-full max-w-[420px] relative z-10">
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.png" alt="Smart Dispatch Logo" className="w-16 h-16 rounded-2xl shadow-md border border-border-color mb-4" />
+          <img src="/logo.png" alt="FataFat Logo" className="w-16 h-16 rounded-2xl shadow-md border border-border-color mb-4" />
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Forgot Password</h1>
           <p className="text-text-muted text-sm mt-1">We'll send you a link to reset it.</p>
         </div>
@@ -68,7 +68,7 @@ export const ForgotPassword: React.FC = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@smartdispatch.com"
+                      placeholder="admin@fatafat.com"
                       className="w-full py-3 pr-4 pl-10 bg-bg-primary border border-border-color rounded-xl text-text-primary text-sm transition-all outline-none focus:border-accent-primary focus:ring-4 focus:ring-accent-primary/10 placeholder:text-text-muted/50"
                     />
                   </div>

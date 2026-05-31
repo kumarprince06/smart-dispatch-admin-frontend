@@ -21,9 +21,11 @@ export default {
           muted: '#6B7280',
         },
         accent: {
-          primary: '#6366F1',
-          hover: '#4F46E5',
-          light: 'rgba(99, 102, 241, 0.15)',
+          primary: '#2563EB',
+          hover: '#1D4ED8',
+          light: 'rgba(37, 99, 235, 0.15)',
+          orange: '#F97316',
+          orangeHover: '#EA6C00',
         },
         status: {
           success: '#10B981',
@@ -36,7 +38,7 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       boxShadow: {
-        neon: '0 0 15px rgba(99, 102, 241, 0.3)',
+        neon: '0 0 15px rgba(37, 99, 235, 0.3)',
       },
       backdropBlur: {
         glass: '12px',

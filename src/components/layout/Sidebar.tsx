@@ -41,8 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     )}>
       <div className="p-6 flex items-center justify-between border-b border-border-color">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="Smart Dispatch Logo" className="w-8 h-8 rounded-md shadow-sm border border-border-color shrink-0" />
-          <span className="font-bold text-xl tracking-tight text-gradient whitespace-nowrap">Smart Dispatch</span>
+          <img src="/logo.png" alt="FataFat Logo" className="w-8 h-8 rounded-md shadow-sm border border-border-color shrink-0" />
+          <span className="font-bold text-xl tracking-tight text-gradient whitespace-nowrap">FataFat</span>
         </div>
         <button onClick={onClose} className="lg:hidden text-text-secondary hover:text-text-primary p-1">
           <X size={20} />

@@ -16,7 +16,7 @@ const LocationPicker = ({ position, setPosition }: { position: [number, number],
       setPosition([e.latlng.lat, e.latlng.lng]);
     },
   });
-  return position[0] !== 0 ? <Circle center={position} radius={50} color="#6366f1" fillOpacity={0.8} /> : null;
+  return position[0] !== 0 ? <Circle center={position} radius={50} color="#2563eb" fillOpacity={0.8} /> : null;
 };
 
 const MapUpdater = ({ position }: { position: [number, number] }) => {
@@ -205,7 +205,7 @@ export const ZoneFormModal: React.FC<ZoneFormModalProps> = ({ onClose, onSuccess
               <Circle 
                 center={position} 
                 radius={formData.radiusKm * 1000} 
-                pathOptions={{ color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.1, weight: 2, dashArray: '5, 5' }} 
+                pathOptions={{ color: '#2563eb', fillColor: '#2563eb', fillOpacity: 0.1, weight: 2, dashArray: '5, 5' }} 
               />
             </MapContainer>
           </div>

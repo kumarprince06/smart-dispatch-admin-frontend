@@ -52,22 +52,48 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order: ini
   const ORS_API_KEY = '5b3ce3597851110001cf62482d8a30b2452a445883bb9fe53d4220f4'; // OpenRouteService Key (extracted from base64)
 
   useEffect(() => {
-    // Fetch route from OpenRouteService
+    // Fetch route with a solid OSRM primary and ORS fallback strategy
     const fetchRoute = async () => {
+      // 1. Try OSRM first (Free, No Key, No CORS issues!)
+      try {
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${order.pickupLongitude},${order.pickupLatitude};${order.dropLongitude},${order.dropLatitude}?overview=full&geometries=geojson`;
+        const response = await fetch(osrmUrl);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.routes && data.routes.length > 0) {
+            const coords = data.routes[0].geometry.coordinates;
+            // OSRM returns [lon, lat], Leaflet expects [lat, lon]
+            const leafletCoords: [number, number][] = coords.map((c: [number, number]) => [c[1], c[0]]);
+            setRouteCoordinates(leafletCoords);
+            return; // Success! Exit early
+          }
+        }
+      } catch (osrmError) {
+        console.warn('OSRM routing failed, trying ORS fallback:', osrmError);
+      }
+
+      // 2. Fallback to OpenRouteService (ORS)
       try {
         const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${order.pickupLongitude},${order.pickupLatitude}&end=${order.dropLongitude},${order.dropLatitude}`;
         const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.features && data.features.length > 0) {
-          const coords = data.features[0].geometry.coordinates;
-          // ORS returns [lon, lat], Leaflet expects [lat, lon]
-          const leafletCoords: [number, number][] = coords.map((c: [number, number]) => [c[1], c[0]]);
-          setRouteCoordinates(leafletCoords);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.features && data.features.length > 0) {
+            const coords = data.features[0].geometry.coordinates;
+            const leafletCoords: [number, number][] = coords.map((c: [number, number]) => [c[1], c[0]]);
+            setRouteCoordinates(leafletCoords);
+            return; // Success!
+          }
         }
-      } catch (error) {
-        console.error('Failed to fetch route:', error);
+      } catch (orsError) {
+        console.error('ORS routing fallback failed too:', orsError);
       }
+
+      // 3. Absolute Fallback: Draw straight line if all routing engines are blocked/offline
+      setRouteCoordinates([
+        [order.pickupLatitude, order.pickupLongitude],
+        [order.dropLatitude, order.dropLongitude]
+      ]);
     };
 
     if (order.pickupLatitude && order.dropLatitude) {
@@ -77,7 +103,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order: ini
 
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
-      case 'CREATED': return 'bg-bg-tertiary text-text-primary border-border-color';
+      case 'REQUESTED': return 'bg-bg-tertiary text-text-primary border-border-color';
       case 'ASSIGNED': return 'bg-status-warning/10 text-status-warning border-status-warning/30';
       case 'PICKED_UP': return 'bg-status-info/10 text-status-info border-status-info/30';
       case 'IN_TRANSIT': return 'bg-accent-primary/10 text-accent-primary border-accent-primary/30';
@@ -95,7 +121,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order: ini
 
   const handleStartAssign = async () => {
     setIsAssigning(true);
-    const response = await getDrivers('/drivers?status=ONLINE&size=50');
+    const response = await getDrivers('/drivers?status=AVAILABLE&size=50');
     if (response?.data?.content) {
       setAvailableDrivers(response.data.content);
     }
@@ -227,7 +253,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order: ini
                   <Truck size={16} />
                   <span className="text-xs font-semibold uppercase tracking-wider">Driver Assignment</span>
                 </div>
-                {order.status === 'CREATED' && !isAssigning && (
+                {order.status === 'REQUESTED' && !isAssigning && (
                   <button 
                     onClick={handleStartAssign}
                     className="text-xs font-medium bg-accent-primary text-white px-3 py-1.5 rounded-lg hover:bg-accent-primary/90 transition-colors"
